@@ -1,18 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { InMemoryDB } from 'src/InMemoryDB/InMemoryDB';
-import { DATE_BASE } from 'src/constants/common';
+import { DatabaseModule } from 'src/datebase/database.module';
 
 @Module({
-  imports: [],
+  imports: [DatabaseModule],
   controllers: [UsersController],
-  providers: [
-    UsersService,
-    {
-      provide: DATE_BASE,
-      useClass: InMemoryDB,
-    },
-  ],
+  providers: [UsersService],
 })
 export class UsersModule {}
