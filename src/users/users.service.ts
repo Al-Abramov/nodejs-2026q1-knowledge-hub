@@ -1,27 +1,31 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { DATE_BASE } from 'src/constants/common';
-import { IDateBase } from 'src/types/db';
+import { IDataBase } from 'src/types/db';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, USER_ROLE } from './users.entity';
 import { randomUUID } from 'node:crypto';
-import { checkIsUUID, getUserAndChek } from 'src/utils/common';
+import { checkIsUUID, getItemAndChek } from 'src/utils/common';
 import { UpdatePasswordDto } from './dto/update-password-dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(DATE_BASE)
-    private db: IDateBase,
+    private db: IDataBase,
   ) {}
 
-  getUsers(): any[] {
+  getUsers(): User[] {
     return this.db.users.map((user) => this.excludePassword(user));
   }
 
-  getUserById(id: string): any {
-    checkIsUUID(id);
+  getUserById(id: string): User {
+    checkIsUUID(id, 'Invalid userId');
 
-    const user = getUserAndChek(this.db.users, id);
+    const user = getItemAndChek<User>({
+      items: this.db.users,
+      id,
+      errorText: 'User not found',
+    });
 
     return this.excludePassword(user);
   }
@@ -48,9 +52,13 @@ export class UsersService {
   }
 
   updatePassword(id: string, dto: UpdatePasswordDto) {
-    checkIsUUID(id);
+    checkIsUUID(id, 'Invalid userId');
 
-    const user = getUserAndChek(this.db.users, id);
+    const user = getItemAndChek<User>({
+      items: this.db.users,
+      id,
+      errorText: 'User not found',
+    });
 
     if (user.password !== dto.oldPassword) {
       throw new ForbiddenException('Old password is incorrect');
@@ -62,10 +70,14 @@ export class UsersService {
     return this.excludePassword(user);
   }
 
-  deleteUSer(id: string) {
-    checkIsUUID(id);
+  deleteUser(id: string) {
+    checkIsUUID(id, 'Invalid userId');
 
-    const user = getUserAndChek(this.db.users, id);
+    const user = getItemAndChek<User>({
+      items: this.db.users,
+      id,
+      errorText: 'User not found',
+    });
 
     this.db.users = this.db.users.filter((u) => u.id !== id);
 

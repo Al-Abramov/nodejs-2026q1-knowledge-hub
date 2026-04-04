@@ -1,19 +1,28 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { isUUID } from 'class-validator';
-import { User } from 'src/users/users.entity';
 
-export const checkIsUUID = (id: string) => {
+export const checkIsUUID = (id: string, errorText: string) => {
   if (!isUUID(id)) {
-    throw new BadRequestException('Invalid userId');
+    throw new BadRequestException(errorText);
   }
 };
 
-export const getUserAndChek = (users: User[], id: string): User | null => {
-  const user = users.find((user) => user.id === id);
+interface GetItemAndChek<T> {
+  items: T[];
+  id: string;
+  errorText: string;
+}
 
-  if (!user) {
-    throw new BadRequestException('User not found');
+export const getItemAndChek = <T extends { id: string }>(
+  params: GetItemAndChek<T>,
+): T | null => {
+  const { items, id, errorText } = params;
+
+  const item = items.find((char) => char.id === id);
+
+  if (!item) {
+    throw new NotFoundException(errorText);
   }
 
-  return user || null;
+  return item;
 };

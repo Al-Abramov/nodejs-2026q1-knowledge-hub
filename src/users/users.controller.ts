@@ -12,18 +12,19 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password-dto';
+import { User } from './users.entity';
 
 @Controller('user')
 export class UsersController {
   constructor(private readonly service: UsersService) {}
 
   @Get()
-  getUsers(): any[] {
+  getUsers(): User[] {
     return this.service.getUsers();
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string): any {
+  getUserById(@Param('id') id: string): User {
     return this.service.getUserById(id);
   }
 
@@ -40,7 +41,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUSer(@Param('id') id: string) {
-    return this.service.deleteUSer(id);
+  deleteUser(@Param('id') id: string) {
+    this.service.deleteUser(id);
   }
 }
