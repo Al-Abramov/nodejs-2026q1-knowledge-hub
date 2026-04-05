@@ -105,7 +105,7 @@ export class ArticleService {
   deleteArticle(id: string) {
     checkIsUUID(id, 'Invalid articleId');
 
-    const article = getItemAndChek<Article>({
+    getItemAndChek<Article>({
       items: this.db.articles,
       id,
       errorText: 'Article not found',
@@ -113,7 +113,8 @@ export class ArticleService {
 
     this.db.articles = this.db.articles.filter((article) => article.id !== id);
 
-    // TODO ОБНОВИТЬ
-    // this.db.comments = this.db.comments.filter(c => c.articleId !== id);
+    this.db.comments = this.db.comments.filter(
+      (comment) => comment.articleId !== id,
+    );
   }
 }

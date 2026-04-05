@@ -60,14 +60,18 @@ export class CategoryService {
   deleteCategory(id: string) {
     checkIsUUID(id, 'Invalid categoryId');
 
-    const category = getItemAndChek<Category>({
+    getItemAndChek<Category>({
       items: this.db.categories,
       id,
       errorText: 'Category not found',
     });
 
-    this.db.categories = this.db.categories.filter((c) => c.id !== id);
+    this.db.categories = this.db.categories.filter(
+      (category) => category.id !== id,
+    );
 
-    // TODO ОБНОВИТЬ статьи article.categoryId = null
+    this.db.articles = this.db.articles.map((article) =>
+      article.categoryId === id ? { ...article, categoryId: null } : article,
+    );
   }
 }

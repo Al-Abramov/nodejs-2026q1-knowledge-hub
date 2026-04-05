@@ -1,10 +1,11 @@
 import { Article } from 'src/article/article.entity';
 import { Category } from 'src/category/category.entity';
+import { Comment } from 'src/comment/comment.entity';
 import { User } from 'src/users/users.entity';
 
 export interface IDataBase {
   users: User[];
   categories: Category[];
   articles: Article[];
-  // comments: Comment[];
+  comments: Comment[];
 }

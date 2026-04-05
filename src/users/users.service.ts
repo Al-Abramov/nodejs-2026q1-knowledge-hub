@@ -73,14 +73,20 @@ export class UsersService {
   deleteUser(id: string) {
     checkIsUUID(id, 'Invalid userId');
 
-    const user = getItemAndChek<User>({
+    getItemAndChek<User>({
       items: this.db.users,
       id,
       errorText: 'User not found',
     });
 
-    this.db.users = this.db.users.filter((u) => u.id !== id);
+    this.db.users = this.db.users.filter((user) => user.id !== id);
 
-    // TODO ОБНОВИТЬ статьи, УДАЛИТЬ комментарии пользователя
+    this.db.articles = this.db.articles.map((article) =>
+      article.authorId === id ? { ...article, authorId: null } : article,
+    );
+
+    this.db.comments = this.db.comments.filter(
+      (comment) => comment.authorId !== id,
+    );
   }
 }
