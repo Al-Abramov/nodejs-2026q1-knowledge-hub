@@ -9,7 +9,12 @@ import { QueryCommentDto } from './dto/query-dto';
 import { Comment } from './comment.entity';
 import { CreateCommentDto } from './dto/create-comment-dto';
 import { randomUUID } from 'node:crypto';
-import { checkIsUUID, getItemAndChek } from 'src/utils/common';
+import {
+  applyPagination,
+  applySorting,
+  checkIsUUID,
+  getItemAndChek,
+} from 'src/utils/common';
 
 @Injectable()
 export class CommentService {
@@ -18,12 +23,24 @@ export class CommentService {
     private db: IDataBase,
   ) {}
 
-  getComments(query: QueryCommentDto): Comment[] {
-    const { articleId } = query;
-
-    return this.db.comments.filter(
-      (comment) => comment.articleId === articleId,
+  getComments(query: QueryCommentDto) {
+    let comments = this.db.comments.filter(
+      (comment) => comment.articleId === query.articleId,
     );
+
+    comments = applySorting(comments, {
+      sortBy: query.sortBy,
+      order: query.order,
+    });
+
+    if (!query.page && !query.limit) {
+      return comments;
+    }
+
+    return applyPagination(comments, {
+      page: Number(query.page),
+      limit: Number(query.limit),
+    });
   }
 
   getCommentById(id: string) {

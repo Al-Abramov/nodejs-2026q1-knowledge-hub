@@ -8,19 +8,21 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category-dto';
+import { QueryCategoryDto } from './dto/query-category-dto';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly service: CategoryService) {}
 
   @Get()
-  getCategories(): Category[] {
-    return this.service.getCategories();
+  getCategories(@Query() query: QueryCategoryDto) {
+    return this.service.getCategories(query);
   }
 
   @Get(':id')

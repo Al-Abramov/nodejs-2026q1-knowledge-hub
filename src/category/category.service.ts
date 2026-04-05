@@ -2,10 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DATE_BASE } from 'src/constants/common';
 import { IDataBase } from 'src/types/db';
 import { Category } from './category.entity';
-import { checkIsUUID, getItemAndChek } from 'src/utils/common';
+import {
+  applyPagination,
+  applySorting,
+  checkIsUUID,
+  getItemAndChek,
+} from 'src/utils/common';
 import { randomUUID } from 'crypto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category-dto';
+import { QueryCategoryDto } from './dto/query-category-dto';
 
 @Injectable()
 export class CategoryService {
@@ -14,8 +20,22 @@ export class CategoryService {
     private db: IDataBase,
   ) {}
 
-  getCategories(): Category[] {
-    return this.db.categories;
+  getCategories(query: QueryCategoryDto) {
+    let categories = [...this.db.categories];
+
+    categories = applySorting(categories, {
+      sortBy: query.sortBy,
+      order: query.order,
+    });
+
+    if (!query.page && !query.limit) {
+      return categories;
+    }
+
+    return applyPagination(categories, {
+      page: Number(query.page),
+      limit: Number(query.limit),
+    });
   }
 
   getCategoryById(id: string): Category {

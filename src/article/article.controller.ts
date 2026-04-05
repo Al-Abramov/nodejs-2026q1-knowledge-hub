@@ -21,7 +21,7 @@ export class ArticleController {
   constructor(private readonly service: ArticleService) {}
 
   @Get()
-  getArticles(@Query() query: QueryArticleDto): Article[] {
+  getArticles(@Query() query: QueryArticleDto) {
     return this.service.getArticles(query);
   }
 

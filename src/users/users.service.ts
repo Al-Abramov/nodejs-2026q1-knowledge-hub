@@ -4,8 +4,14 @@ import { IDataBase } from 'src/types/db';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, USER_ROLE } from './users.entity';
 import { randomUUID } from 'node:crypto';
-import { checkIsUUID, getItemAndChek } from 'src/utils/common';
+import {
+  applyPagination,
+  applySorting,
+  checkIsUUID,
+  getItemAndChek,
+} from 'src/utils/common';
 import { UpdatePasswordDto } from './dto/update-password-dto';
+import { QueryUserDto } from './dto/query-user-dto';
 
 @Injectable()
 export class UsersService {
@@ -14,8 +20,26 @@ export class UsersService {
     private db: IDataBase,
   ) {}
 
-  getUsers(): User[] {
-    return this.db.users.map((user) => this.excludePassword(user));
+  getUsers(query: QueryUserDto) {
+    let users = [...this.db.users];
+
+    users = applySorting(users, {
+      sortBy: query.sortBy,
+      order: query.order,
+    });
+
+    const usersWithoutPassword = users.map((user) =>
+      this.excludePassword(user),
+    );
+
+    if (!query.page && !query.limit) {
+      return usersWithoutPassword;
+    }
+
+    return applyPagination(usersWithoutPassword, {
+      page: Number(query.page),
+      limit: Number(query.limit),
+    });
   }
 
   getUserById(id: string): User {

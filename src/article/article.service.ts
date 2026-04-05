@@ -3,7 +3,12 @@ import { DATE_BASE } from 'src/constants/common';
 import { IDataBase } from 'src/types/db';
 import { QueryArticleDto } from './dto/query-article-dto';
 import { Article, ARTICLE_STATUS } from './article.entity';
-import { checkIsUUID, getItemAndChek } from 'src/utils/common';
+import {
+  applyPagination,
+  applySorting,
+  checkIsUUID,
+  getItemAndChek,
+} from 'src/utils/common';
 import { CreateArticleDto } from './dto/create-article-dto';
 import { randomUUID } from 'node:crypto';
 import { UpdateArticleDto } from './dto/update-article-dto';
@@ -15,7 +20,7 @@ export class ArticleService {
     private db: IDataBase,
   ) {}
 
-  getArticles(query: QueryArticleDto): Article[] {
+  getArticles(query: QueryArticleDto) {
     let articles = this.db.articles;
 
     if (query.status) {
@@ -30,7 +35,19 @@ export class ArticleService {
       articles = articles.filter((a) => a.tags.includes(query.tag));
     }
 
-    return articles;
+    articles = applySorting(articles, {
+      sortBy: query.sortBy,
+      order: query.order,
+    });
+
+    if (!query.page && !query.limit) {
+      return articles;
+    }
+
+    return applyPagination(articles, {
+      page: Number(query.page),
+      limit: Number(query.limit),
+    });
   }
 
   getArticleById(id: string): Article {
