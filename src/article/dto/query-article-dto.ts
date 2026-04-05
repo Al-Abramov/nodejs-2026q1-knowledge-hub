@@ -13,7 +13,7 @@ export class QueryArticleDto {
   @IsString()
   categoryId?: string;
 
-  @ApiProperty({ isArray: true, required: false })
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   tag?: string;
