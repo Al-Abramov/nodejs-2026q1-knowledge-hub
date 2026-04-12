@@ -72,3 +72,9 @@ http://localhost:4000/doc
 ```
 npm run test
 ```
+
+## Docker Hub
+
+The application image is available at:
+
+https://hub.docker.com/r/alexeyal/knowledge-hub
