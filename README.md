@@ -1,84 +1,80 @@
-# Knowledge Hub
+# Knowledge Hub API
 
-## Prerequisites
+## Description
 
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+Knowledge Hub is a REST API built with NestJS for managing users, categories, articles, and comments.
 
-## Downloading
+The application supports:
 
-```
-git clone {repository URL}
-```
+- CRUD operations for all entities
+- Validation using DTOs
+- Query filtering for articles
+- Cascade-like behavior on delete operations
+- Request logging via middleware
+- Swagger API documentation
 
-## Installing NPM modules
+---
 
-```
+## Tech Stack
+
+- Node.js
+- NestJS
+- TypeScript
+- REST API
+- Swagger (OpenAPI)
+- class-validator / class-transformer
+
+---
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone <repository-url>
+cd <project-folder>
 npm install
 ```
 
-## Running application
+## Environment Variables
+
+Create a .env file in the root directory:
+
+```bash
+PORT=4000
+```
+
+## Running the Application
+
+Development mode
+
+```bash
+npm run start:dev
+```
+
+Production mode
 
 ```
-npm start
+npm run build
+npm run start
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+## API Documentation
 
-## Testing
+Swagger documentation is available at:
 
-After application running open new terminal and enter:
+```
+http://localhost:4000/doc
+```
 
-To run all tests without authorization
+## Running Tests
 
 ```
 npm run test
 ```
 
-To run only one of all test suites
+## Docker Hub
 
-```
-npm run test -- <path to suite>
-```
+The application image is available at:
 
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
-```
-
-To run refresh token tests
-
-```
-npm run test:refresh
-```
-
-To run RBAC (role-based access control) tests
-
-```
-npm run test:rbac
-```
-
-### Auto-fix and format
-
-```
-npm run lint
-```
-
-```
-npm run format
-```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+https://hub.docker.com/r/alexeyal/knowledge-hub
